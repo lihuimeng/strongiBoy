@@ -1,6 +1,9 @@
 package com.dazhaung.family;
 
 
+import com.dazhaung.family.base.server.service.WebServer;
+import com.dazhaung.family.base.server.service.impl.WebServerImpl;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,12 +11,19 @@ import java.net.Socket;
 public class StrongBoyApplication {
 
     public static void main(String[] args) {
+
+
         try {
-            ServerSocket serverSocket = new ServerSocket(8080);
+
+            WebServer webServer = new WebServerImpl();
+            webServer.start();
+
+
+//            ServerSocket serverSocket = new ServerSocket(8080);
 
 //             InputStream inputStream = socket.getInputStream();
 
-            while (true) {
+            /*while (true) {
                 String reponse = "<html><body><h1>李大壮</h1></body></html>";
                 String str = "HTTP/1.0 200 OK\n" +
                         "Content-Type: text/html; charset=utf-8\n" +
@@ -42,7 +52,7 @@ public class StrongBoyApplication {
 
                 System.out.println("接收到请求" + serverSocket.getInetAddress());
 
-            }
+            }*/
 
 
         } catch (Exception e) {
