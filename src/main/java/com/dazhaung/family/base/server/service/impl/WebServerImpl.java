@@ -1,7 +1,10 @@
 package com.dazhaung.family.base.server.service.impl;
 
+import com.dazhaung.family.base.common.BoyThreadPoolExecutor;
 import com.dazhaung.family.base.server.po.RequestTaskPO;
 import com.dazhaung.family.base.server.service.WebServer;
+import com.dazhaung.family.base.utils.PropertiesUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,20 +13,13 @@ import java.util.concurrent.*;
 
 public class WebServerImpl implements WebServer {
     public static int port = 8080;
-    public static int corePoolSize = 0;
-    public static int maximumPoolSize = Integer.MAX_VALUE;
-    public static long keepLiveTime = 60L;
-    public static TimeUnit timeUnit = TimeUnit.SECONDS;
-    //线程池等待队列最大队列数
-    public static int capacity = Integer.MAX_VALUE;
-
-
     public void start() {
         //初始化serverSocket
         try {
-            ServerSocket serverSocket = new ServerSocket(port);
+            ServerSocket serverSocket = new ServerSocket(getPort());
             BoyThreadFactory threadFactory = new BoyThreadFactory();
-            ExecutorService executorService = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepLiveTime, timeUnit, new LinkedBlockingDeque<Runnable>(capacity),threadFactory);
+
+            ExecutorService executorService = BoyThreadPoolExecutor.newThreadPool();
             while (true) {
                 Socket socket = serverSocket.accept();
                 RequestTaskPO requestTaskPO = new RequestTaskPO(socket);
@@ -59,6 +55,11 @@ public class WebServerImpl implements WebServer {
         }
     }
 
-
-
+    public static int getPort() {
+        String value  = PropertiesUtils.getStr("sever.port");
+        if (StringUtils.isNotBlank(value)) {
+            return Integer.valueOf(value);
+        }
+        return port;
+    }
 }
